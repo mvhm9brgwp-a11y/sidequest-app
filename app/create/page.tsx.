@@ -1,0 +1,214 @@
+"use client";
+import { useState } from "react";
+
+export default function CreateClub() {
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({
+    name: "",
+    duration: "30",
+    amount: "",
+    venmo: "",
+    vibe: "",
+    difficulty: "medium",
+    avoid: "",
+  });
+
+  const update = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <main className="min-h-screen bg-[#1a1a2e] text-white px-6 py-8 max-w-lg mx-auto">
+      <div className="flex items-center gap-4 mb-8">
+        <a href="/" className="text-white/50 hover:text-white">←</a>
+        <h1 className="text-lg font-bold tracking-widest">SIDEQUEST</h1>
+      </div>
+
+      {/* Progress */}
+      <div className="flex gap-2 mb-8">
+        {[1, 2, 3].map((s) => (
+          <div
+            key={s}
+            className={`h-1 flex-1 rounded-full ${s <= step ? "bg-white" : "bg-white/20"}`}
+          />
+        ))}
+      </div>
+
+      {/* Step 1 - Club basics */}
+      {step === 1 && (
+        <div className="flex flex-col gap-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-1">Name your club</h2>
+            <p className="text-white/50 text-sm">This is what your crew will see when they get invited.</p>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">Club name</label>
+              <input
+                className="w-full bg-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 border border-white/10 focus:outline-none focus:border-white/40"
+                placeholder="e.g. Weekend Warriors"
+                value={form.name}
+                onChange={(e) => update("name", e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">Duration</label>
+              <select
+                className="w-full bg-white/10 rounded-xl px-4 py-3 text-white border border-white/10 focus:outline-none focus:border-white/40"
+                value={form.duration}
+                onChange={(e) => update("duration", e.target.value)}
+              >
+                <option value="7">1 week</option>
+                <option value="14">2 weeks</option>
+                <option value="30">1 month</option>
+                <option value="60">2 months</option>
+                <option value="90">3 months</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">Amount per person ($)</label>
+              <input
+                className="w-full bg-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 border border-white/10 focus:outline-none focus:border-white/40"
+                placeholder="e.g. 20"
+                type="number"
+                value={form.amount}
+                onChange={(e) => update("amount", e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">Your Venmo handle</label>
+              <input
+                className="w-full bg-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 border border-white/10 focus:outline-none focus:border-white/40"
+                placeholder="@yourhandle"
+                value={form.venmo}
+                onChange={(e) => update("venmo", e.target.value)}
+              />
+            </div>
+          </div>
+          <button
+            onClick={() => setStep(2)}
+            disabled={!form.name || !form.amount || !form.venmo}
+            className="w-full bg-white text-[#1a1a2e] font-bold py-4 rounded-full disabled:opacity-30"
+          >
+            Next →
+          </button>
+        </div>
+      )}
+
+      {/* Step 2 - Challenge vibe */}
+      {step === 2 && (
+        <div className="flex flex-col gap-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-1">Set the vibe</h2>
+            <p className="text-white/50 text-sm">The AI uses this to generate challenges that fit your crew.</p>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">Describe your crew's vibe</label>
+              <textarea
+                className="w-full bg-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 border border-white/10 focus:outline-none focus:border-white/40 h-28 resize-none"
+                placeholder="e.g. Funny and competitive, we love outdoor stuff and dares but nothing too extreme"
+                value={form.vibe}
+                onChange={(e) => update("vibe", e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm text-white/60 mb-3 block">Difficulty</label>
+              <div className="flex gap-3">
+                {["easy", "medium", "hard"].map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => update("difficulty", d)}
+                    className={`flex-1 py-3 rounded-xl border capitalize text-sm font-semibold ${
+                      form.difficulty === d
+                        ? "bg-white text-[#1a1a2e] border-white"
+                        : "bg-white/10 border-white/10 text-white/60"
+                    }`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">Anything to avoid? (optional)</label>
+              <input
+                className="w-full bg-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 border border-white/10 focus:outline-none focus:border-white/40"
+                placeholder="e.g. No water challenges, no singing"
+                value={form.avoid}
+                onChange={(e) => update("avoid", e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setStep(1)}
+              className="flex-1 border border-white/20 text-white font-bold py-4 rounded-full"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => setStep(3)}
+              disabled={!form.vibe}
+              className="flex-1 bg-white text-[#1a1a2e] font-bold py-4 rounded-full disabled:opacity-30"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3 - Review */}
+      {step === 3 && (
+        <div className="flex flex-col gap-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-1">Ready to launch</h2>
+            <p className="text-white/50 text-sm">Review your club before inviting your crew.</p>
+          </div>
+          <div className="bg-white/5 rounded-2xl p-5 border border-white/10 flex flex-col gap-4">
+            <div className="flex justify-between">
+              <span className="text-white/50 text-sm">Club name</span>
+              <span className="font-semibold text-sm">{form.name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/50 text-sm">Duration</span>
+              <span className="font-semibold text-sm">
+                {form.duration === "7" ? "1 week" : form.duration === "14" ? "2 weeks" : form.duration === "30" ? "1 month" : form.duration === "60" ? "2 months" : "3 months"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/50 text-sm">Per person</span>
+              <span className="font-semibold text-sm">${form.amount}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/50 text-sm">Venmo</span>
+              <span className="font-semibold text-sm">{form.venmo}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-white/50 text-sm">Difficulty</span>
+              <span className="font-semibold text-sm capitalize">{form.difficulty}</span>
+            </div>
+            <div className="border-t border-white/10 pt-3">
+              <span className="text-white/50 text-sm block mb-1">Vibe</span>
+              <span className="text-sm">{form.vibe}</span>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setStep(2)}
+              className="flex-1 border border-white/20 text-white font-bold py-4 rounded-full"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => alert("Club created! (We'll wire this up next)")}
+              className="flex-1 bg-white text-[#1a1a2e] font-bold py-4 rounded-full"
+            >
+              Launch club 🚀
+            </button>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}
