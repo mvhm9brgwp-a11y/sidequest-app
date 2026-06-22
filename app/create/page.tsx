@@ -1,8 +1,15 @@
 "use client";
 import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function CreateClub() {
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
     duration: "30",
@@ -15,6 +22,17 @@ export default function CreateClub() {
 
   const update = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const launch = async () => {
+    setLoading(true);
+    const { error } = await supabase.from("clubs").insert([form]);
+    setLoading(false);
+    if (error) {
+        alert("Something went wrong: " + JSON.stringify(error));
+    } else {
+      alert("Club created! Time to invite your crew.");
+    }
   };
 
   return (
@@ -59,7 +77,9 @@ export default function CreateClub() {
           </div>
           <div style={{display:"flex",gap:"12px"}}>
             <button onClick={() => setStep(2)} style={{flex:"1",background:"transparent",border:"1px solid rgba(255,255,255,0.2)",color:"white",fontWeight:"700",padding:"16px",borderRadius:"99px",fontSize:"16px",cursor:"pointer"}}>← Back</button>
-            <button onClick={() => alert("Club created!")} style={{flex:"1",background:"white",color:"#1a1a2e",fontWeight:"700",padding:"16px",borderRadius:"99px",border:"none",fontSize:"16px",cursor:"pointer"}}>Launch 🚀</button>
+            <button onClick={launch} disabled={loading} style={{flex:"1",background:"white",color:"#1a1a2e",fontWeight:"700",padding:"16px",borderRadius:"99px",border:"none",fontSize:"16px",cursor:"pointer",opacity:loading ? 0.5 : 1}}>
+              {loading ? "Launching..." : "Launch 🚀"}
+            </button>
           </div>
         </div>
       )}
