@@ -26,12 +26,12 @@ export default function CreateClub() {
 
   const launch = async () => {
     setLoading(true);
-    const { error } = await supabase.from("clubs").insert([form]);
+    const { data, error } = await supabase.from("clubs").insert([form]).select();
     setLoading(false);
     if (error) {
-        alert("Something went wrong: " + JSON.stringify(error));
+      alert("Something went wrong: " + JSON.stringify(error));
     } else {
-      alert("Club created! Time to invite your crew.");
+        alert("Club ID: " + JSON.stringify(data));
     }
   };
 
